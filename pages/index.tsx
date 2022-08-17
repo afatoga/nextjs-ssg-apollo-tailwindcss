@@ -1,3 +1,4 @@
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Hero from "../components/hero";
 import Navbar from "../components/navbar";
@@ -12,6 +13,8 @@ import Cta from "../components/cta";
 import Faq from "../components/faq";
 import PopupWidget from "../components/popupWidget";
 
+// import { useTranslation } from "next-i18next";
+
 //import dynamic from "next/dynamic";
 
 // const Video = dynamic(() => import("../components/video"));
@@ -25,10 +28,14 @@ import PopupWidget from "../components/popupWidget";
 // const PopupWidget = dynamic(() => import("../components/popupWidget"));
 
 export default function Home() {
+  
+
+  // const { t } = useTranslation("common");
+
   return (
     <>
       <Head>
-        <title>Nextly - Free Nextjs & TailwindCSS Landing Page Template</title>
+        <title>Website</title>
         <meta
           name="description"
           content="Nextly is a free landing page template built with next.js & Tailwind CSS"
@@ -74,6 +81,15 @@ export default function Home() {
   );
 }
 
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common"])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 // import Head from 'next/head'
 // import Image from 'next/image'

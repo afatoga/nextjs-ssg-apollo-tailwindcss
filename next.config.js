@@ -1,9 +1,12 @@
-module.exports = {
-  i18n: {
-    locales: ["en", "cs", "ru"],
-    defaultLocale: "cs",
-  },
-  //target: "serverless",
+const { i18n } = require("./next-i18next.config");
+
+/**
+ * @type {import('next').NextConfig}
+ */
+
+const nextConfig = {
+  // other stuff
+  i18n,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback.fs = false;
@@ -11,3 +14,5 @@ module.exports = {
     return config;
   },
 };
+
+module.exports = nextConfig;

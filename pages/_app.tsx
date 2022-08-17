@@ -1,3 +1,4 @@
+import { appWithTranslation } from "next-i18next";
 import { AppContext, AppInitialProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../lib/apolloClient";
@@ -18,4 +19,4 @@ function MyApp({ Component, pageProps }: AppContext & AppInitialProps) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);
