@@ -17,7 +17,7 @@ const POSTS_PER_PAGE = 10;
 
 const GET_POSTS = gql`
   query getPosts($first: Int!, $after: String) {
-    posts(first: $first, after: $after) {
+    posts(first: $first, after: $after, where: { language: CS }) {
       pageInfo {
         hasNextPage
         endCursor
