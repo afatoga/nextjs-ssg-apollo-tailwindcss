@@ -1,6 +1,6 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { gql, useQuery } from "@apollo/client";
-import { GetStaticPathsContext, GetStaticPropsContext } from "next";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import DOMPurify from 'isomorphic-dompurify';
 
@@ -46,13 +46,13 @@ fragment Page on Page {
 `;
 
 export default function SSG({pageSlug}:{pageSlug: string}) {
-  const { locale: activeLocale, /*locales, asPath*/ } = useRouter();
+  const router = useRouter();
   const {t} = useTranslation('services');
 
   const { loading, error, data } = useQuery(GET_PAGE_SERVICES, {
     variables: {
       uri: `/${pageSlug}`,
-      language: activeLocale.toUpperCase()
+      language: router.locale.toUpperCase()
     }
   });
 
@@ -62,11 +62,20 @@ export default function SSG({pageSlug}:{pageSlug: string}) {
   // const posts = data?.posts?.edges?.map((edge: PostEdge) => edge.node) || [];
   // const havePosts = Boolean(posts.length);
 
+  const changeLocale = (value: string) => {
+    
+    router.push(router.route, router.asPath, {
+      locale: value,
+    });
+  }
+
   return (
     <Layout>
       <h1>{t('title')}</h1>
 
       {content && <div dangerouslySetInnerHTML={{ __html:content}}></div>}
+
+      <div onClick={() => changeLocale("en")}>change locale</div>
     </Layout>
   );
 }
@@ -90,13 +99,13 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   });
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [
       { params: { pageSlug: 'sluzby' }, locale: 'cs' },
       { params: { pageSlug: 'services' }, locale: 'en' },
       { params: { pageSlug: 'uslugi' }, locale: 'ru' },
     ],
-    fallback: true,
+    fallback: false,
   };
  }
