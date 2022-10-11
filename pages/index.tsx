@@ -12,6 +12,12 @@ import Testimonials from "../components/testimonials";
 import Cta from "../components/cta";
 import Faq from "../components/faq";
 import PopupWidget from "../components/popupWidget";
+import { GET_PAGE_BY_SLUG } from "../lib/queries/general";
+import { useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
+import { addApolloState, initializeApollo } from "../lib/apolloClient";
+import DOMPurify from "isomorphic-dompurify";
 
 // import { useTranslation } from "next-i18next";
 
@@ -28,7 +34,18 @@ import PopupWidget from "../components/popupWidget";
 // const PopupWidget = dynamic(() => import("../components/popupWidget"));
 
 export default function Home() {
-  
+
+  const router = useRouter();
+
+  const { loading, error, data } = useQuery(GET_PAGE_BY_SLUG, {
+    variables: {
+      uri: `/homepage`,
+      language: router.locale.toUpperCase(),
+    },
+  });
+
+  let content = data?.nodeByUri?.translation?.content;
+  if (content) content = DOMPurify.sanitize(content);
 
   // const { t } = useTranslation("common");
 
@@ -45,12 +62,14 @@ export default function Home() {
 
       <Navbar />
       <Hero />
+      {content && <div dangerouslySetInnerHTML={{ __html: content }}></div>}
       <SectionTitle
         pretitle="Nextly Benefits"
         title=" Why should you use this landing page">
-        Nextly is a free landing page & marketing website template for startups
+         
+         Nextly is a free landing page & marketing website template for startups
         and indie projects. Its built with Next.js & TailwindCSS. And its
-        completely open-source.
+        completely open-source. 
       </SectionTitle>
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
@@ -82,14 +101,44 @@ export default function Home() {
 }
 
 
-export async function getStaticProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["common"])),
-      // Will be passed to the page component as props
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const apolloClient = initializeApollo();
+  await apolloClient.query({
+    query: GET_PAGE_BY_SLUG,
+    variables: {
+      uri: `/homepage`,
+      language: context.locale.toUpperCase(),
     },
-  };
+  });
+
+  return addApolloState(apolloClient, {
+    props: {
+      ...(await serverSideTranslations(context.locale, ["common"])),
+      pageSlug: 'homepage',
+    },
+  });
 }
+
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   return {
+//     paths: [
+//       { params: { pageSlug: "homepage" }, locale: "cs" },
+//       { params: { pageSlug: "homepage-en" }, locale: "en" },
+//       { params: { pageSlug: "homepage-ru" }, locale: "ru" },
+//     ],
+//     fallback: false,
+//   };
+// };
+
+
+// export async function getStaticProps({ locale }) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ["common"])),
+//       // Will be passed to the page component as props
+//     },
+//   };
+// }
 
 // import Head from 'next/head'
 // import Image from 'next/image'

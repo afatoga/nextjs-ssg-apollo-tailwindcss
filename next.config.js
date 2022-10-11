@@ -15,8 +15,8 @@ const nextConfig = {
         locale: false, // Use `locale: false` so that the prefix matches the desired locale correctly
       },
       {
-        source: "/ru/uslugi",
-        destination: "/ru/sluzby",
+        source: "/ru/sluzby",
+        destination: "/ru/uslugi",
         locale: false,
       },
     ];
