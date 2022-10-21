@@ -1,3 +1,7 @@
 {
-    "greeting": "Vítejte na"
+    "greeting": "Vítejte na",
+    "navigation": {
+        "homepage": "Úvod",
+        "about-us": "O nás"
+    }
 }

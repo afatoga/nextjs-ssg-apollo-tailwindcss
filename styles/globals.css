@@ -14,3 +14,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.font-lexend {
+  font-family: 'Lexend', sans-serif;
+}

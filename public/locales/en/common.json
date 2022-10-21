@@ -1,3 +1,7 @@
 {
-    "greeting": "Welcome to"
+    "greeting": "Welcome to",
+    "navigation": {
+        "homepage": "Home",
+        "about-us": "About us"
+    }
 }
